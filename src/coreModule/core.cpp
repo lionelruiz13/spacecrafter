@@ -24,6 +24,8 @@
  */
 
 #include <algorithm>
+#include <iomanip>
+#include <sstream>
 #include <cmath>
 #include "coreModule/core.hpp"
 #include "tools/utility.hpp"
@@ -35,6 +37,7 @@
 #include "navModule/anchor_manager.hpp"
 #include "navModule/anchor_point.hpp"
 #include "navModule/anchor_point_body.hpp"
+#include "navModule/light_aberration.hpp"
 #include "appModule/space_date.hpp"
 #include "appModule/fontFactory.hpp"
 #include "bodyModule/body_decor.hpp"
@@ -327,6 +330,8 @@ void Core::init(const InitParser& conf)
 	flagAstronomical = conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_NAVIGATION);
 	setFlagAstronomical(flagAstronomical);
 	FlagAtmosphericRefraction = conf.getBoolean(SCS_VIEWING,SCK_FLAG_ATMOSPHERIC_REFRACTION);
+	FlagLightAberration = conf.getBoolean(SCS_VIEWING, SCK_FLAG_LIGHT_ABERRATION);
+	setLightAberrationSpeedScale(conf.getDouble(SCS_VIEWING, SCK_LIGHT_ABERRATION_SPEED_SCALE, 1.0));
 
 	initialvalue.initial_landscapeName=conf.getStr(SCS_INIT_LOCATION,SCK_LANDSCAPE_NAME);
 	currentIlluminates.applyToAll(&IlluminateMgr::setDefaultSize, conf.getDouble(SCS_STARS, SCK_ILLUMINATE_SIZE));
@@ -731,6 +736,48 @@ void Core::uboCamUpdate()
 	uboCam->setClippingFov(projection->getClippingFov());
 	uboCam->setViewportCenter(projection->getViewportFloatCenter());
 	uboCam->setMVP2D(projection->getMatProjectionOrtho2D());
+	const Vec3d scaledVelocity = observatory->getHeliocentricVelocity() * lightAberrationSpeedScale;
+	const double speedInC = scaledVelocity.length() * (AU / SPEED_OF_LIGHT);
+	const bool speedAtOrAboveC = FlagLightAberration && (!std::isfinite(speedInC) || speedInC >= 1.0);
+	if (speedAtOrAboveC && !lightAberrationWasSuperluminal) {
+		std::ostringstream message;
+		message << std::setprecision(8)
+		        << "Light aberration not applied: calculated speed " << speedInC
+		        << "c >= 1c (speed_scale: " << lightAberrationSpeedScale
+		        << ", max_speed: " << 1.0 / lightAberrationSpeedScale
+		        << "c); the relativistic formula requires v < c.";
+		cLog::get()->write(message, LOG_TYPE::L_WARNING);
+	}
+	lightAberrationWasSuperluminal = speedAtOrAboveC;
+	const Vec3d aberrationBetaEye = FlagLightAberration
+		? LightAberration::makeEyeBeta(getLightAberrationVelocity(), navigation)
+		: Vec3d(0., 0., 0.);
+	uboCam->setLightAberrationBeta(aberrationBetaEye.convert());
+}
+
+bool Core::setLightAberrationSpeedScale(double scale)
+{
+	if (!std::isfinite(scale) || scale < 0.0)
+		return false;
+	lightAberrationSpeedScale = scale;
+	return true;
+}
+
+bool Core::setLightAberrationMaxSpeed(double maxSpeedInC)
+{
+	if (!std::isfinite(maxSpeedInC) || maxSpeedInC <= 0.0)
+		return false;
+	return setLightAberrationSpeedScale(1.0 / maxSpeedInC);
+}
+
+Vec3d Core::getLightAberrationVelocity() const
+{
+	if (!FlagLightAberration)
+		return Vec3d(0., 0., 0.);
+	const Vec3d velocity = observatory->getHeliocentricVelocity() * lightAberrationSpeedScale;
+	const double beta = velocity.length() * (AU / SPEED_OF_LIGHT);
+	// The relativistic aberration formula is defined only below c.
+	return std::isfinite(beta) && beta < 1.0 ? velocity : Vec3d(0., 0., 0.);
 }
 
 std::string Core::getSkyCulture() const {
@@ -1645,6 +1692,8 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_TROPIC_LINES, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_TROPIC));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED, currentSsystemFactory->getFlagMoonScale());
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED, currentSsystemFactory->getFlagSunScale());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_LIGHT_ABERRATION, FlagLightAberration);
+	conf.setDouble(SCS_VIEWING, SCK_LIGHT_ABERRATION_SPEED_SCALE, lightAberrationSpeedScale);
 	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_INTENSITY, currentAsterisms->getArtIntensity());
 	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_FADE_DURATION, currentAsterisms->getArtFadeDuration());
 	conf.setDouble(SCS_VIEWING, SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE, getLightPollutionLimitingMagnitude());

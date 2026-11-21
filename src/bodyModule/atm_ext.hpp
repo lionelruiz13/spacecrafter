@@ -15,10 +15,14 @@ public:
     AtmExt(Body *parent, ObjL *obj, const std::string &model);
     ~AtmExt();
 
-    void draw(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat, const Vec3f &sunPos, const Vec3f &bodyPos, float planetOneMinusOblateness, const Vec2i &TesParam, float radius, float atmRadius, float screen_sz, bool depthTest);
+    void draw(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat,
+              const Vec3f &sunPos, const Vec3f &bodyPos, const Vec3f &aberrationBeta,
+              float planetOneMinusOblateness, const Vec2i &TesParam, float radius,
+              float atmRadius, float screen_sz, bool depthTest);
 
     struct _uniform {
         Mat4f ModelViewMatrix;
+        Vec4f aberrationBeta;
         Vec3f sunPos;
         float planetRadius;
         Vec3f bodyPos;

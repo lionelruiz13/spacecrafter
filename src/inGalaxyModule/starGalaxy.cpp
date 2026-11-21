@@ -176,6 +176,7 @@ StarGalaxy::StarGalaxy(const std::string &filename) : global(*Context::instance-
 	vertexArray->addInput(VK_FORMAT_R32G32B32_SFLOAT);
 
 	layout = std::make_unique<PipelineLayout>(vkmgr);
+    layout->setGlobalPipelineLayout(context.layouts.front().get());
     layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
     layout->buildLayout();
     layout->build();
@@ -215,7 +216,7 @@ void StarGalaxy::draw(const Navigator * nav, const Projector* prj)
 	global->fading = (tmp < 1) ? tmp : 1;
 	auto &cmd = frame.begin(cmds[Context::instance->frameIdx], PASS_MULTISAMPLE_DEPTH);
 	pipeline->bind(cmd);
-    layout->bindSet(cmd, *set);
+    layout->bindSets(cmd, {*Context::instance->uboSet, *set});
 	vertex->bind(cmd);
 	vkCmdDraw(cmd, nbStars, 1, 0, 0);
 	frame.compile(cmd);

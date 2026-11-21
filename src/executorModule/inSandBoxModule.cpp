@@ -179,7 +179,7 @@ void InSandBoxModule::update(int delta_time)
 											core->navigation->geTdomeMat(),
 											core->navigation->getDomeFixedMat());
 
-    asyncUpdateBegin({sunPos, moonPos, earthPos_helio, moonPos_helio});
+    asyncUpdateBegin({sunPos, moonPos, earthPos_helio, moonPos_helio, core->getLightAberrationVelocity()});
 
     // Update faders
 	core->currentSkyGridMgr->update(delta_time);
@@ -269,7 +269,8 @@ void InSandBoxModule::draw(int delta_time)
 
 
 	//! solarSystem
-	core->currentNebulas->draw(core->projection, core->navigation, core->currentToneConverter.get(), core->currentAtmosphere->getFlagShow() ? core->sky_brightness : 0);
+	core->currentNebulas->draw(core->projection, core->navigation, core->currentToneConverter.get(), core->currentAtmosphere->getFlagShow() ? core->sky_brightness : 0,
+	                           core->FlagLightAberration, core->getLightAberrationVelocity());
 	core->currentOort->draw(observer->getAltitude(), core->navigation);
 	core->currentIlluminates->draw(core->projection, core->navigation);
 	core->currentAsterisms->draw(core->projection, core->navigation);
@@ -323,7 +324,8 @@ void InSandBoxModule::asyncUpdateLoop()
     AsyncUpdateData data;
     threadQueue.acquire();
     while (threadQueue.pop(data)) {
-        core->currentSsystemFactory->computePreDraw(core->projection, core->navigation);
+        core->currentSsystemFactory->computePreDraw(core->projection, core->navigation,
+                                                    core->FlagLightAberration, data.observerVelocity);
 
 		// Compute the moon phase only if it exists
         float moonPhase = 0.0f;
@@ -339,7 +341,7 @@ void InSandBoxModule::asyncUpdateLoop()
 								  data.earthPos_helio, data.moonPos_helio,
 								  observer->getLatitude(), observer->getAltitude(),
     	                          15.f, 40.f);	// Temperature = 15c, relative humidity = 40%
-        core->currentHipStars->preDraw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), core->currentAtmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
+        core->currentHipStars->preDraw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->navigation, core->timeMgr.get(), core->observatory->getAltitude(), core->currentAtmosphere->getFlagShow() && core->FlagAtmosphericRefraction, core->FlagLightAberration, data.observerVelocity);
         core->currentSsystemFactory->bodyTrace(core->navigation);
         asyncWorkState = false;
     }

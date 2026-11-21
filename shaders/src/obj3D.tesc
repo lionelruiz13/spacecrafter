@@ -18,7 +18,7 @@ layout (location=1) out vec3 texCoordOut[];
 layout (location=2) patch out vec3 dataOut;
 layout (location=3) patch out mat4 invModelOut;
 
-layout (binding=1) uniform fov {
+layout (set=1, binding=1) uniform fov {
     vec3 clipping_fov;
 };
 

@@ -244,7 +244,9 @@ Ring::~Ring(void)
 		threadAsteroid.join();
 }
 
-void Ring::draw(VkCommandBuffer cmd, const Projector* prj, float observerDistanceToBody, const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
+void Ring::draw(VkCommandBuffer cmd, const Projector* prj, float observerDistanceToBody, const Mat4d& mat,
+                double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition,
+                const Vec3f& aberrationBeta, float planetRadius)
 {
 	if (!fullyInitialized)
 		initialize();
@@ -257,9 +259,10 @@ void Ring::draw(VkCommandBuffer cmd, const Projector* prj, float observerDistanc
 	                 + mat.r[ 9]*mat.r[13]
 	                 + mat.r[10]*mat.r[14];
 
-	static_assert(offsetof(RingUniform, SunnySideUp) == sizeof(float) * (16*2 + (3+1)*2 + 3), "Invalid alignment in Ring");
+	static_assert(offsetof(RingUniform, SunnySideUp) == sizeof(float) * (16*2 + 4 + (3+1)*2 + 3), "Invalid alignment in Ring");
 	uniform->get().LightDirection = _lightDirection;
 	uniform->get().PlanetPosition = _planetPosition;
+	uniform->get().aberrationBeta.set(aberrationBeta[0], aberrationBeta[1], aberrationBeta[2], 0.f);
 	uniform->get().PlanetRadius = planetRadius;
 	uniform->get().RingScale = mc;
 

@@ -8,13 +8,13 @@ layout (location=1) in vec3 texCoord;
 
 layout (location=0) out vec4 fragColor;
 
-layout (binding=1) uniform ubo {
+layout (set=1, binding=1) uniform ubo {
     vec3 texCoef; // Coefficient for the texture
     float rayPoints; // Number of points sampled for a ray of length 1
     vec3 rayCoef; // Coefficient of ray length per axis
 };
 
-layout (binding=2) uniform sampler3D colorTexture;
+layout (set=1, binding=2) uniform sampler3D colorTexture;
 
 layout (constant_id=0) const float colorScale = 2;
 

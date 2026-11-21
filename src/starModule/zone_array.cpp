@@ -22,6 +22,7 @@
 //#include "spacecrafter.hpp"
 #include "coreModule/projector.hpp"
 #include "starModule/zone_array.hpp"
+#include "navModule/light_aberration.hpp"
 #include "starModule/geodesic_grid.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
@@ -258,7 +259,7 @@ void ZoneArray1::updateHipIndex(HipIndexStruct hip_index[]) const
 	}
 }
 
-void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars,  bool atmosphere, bool isolateSelected) const
+void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars, bool atmosphere, bool lightAberration, const Vec3d& observerVelocity, bool isolateSelected) const
 {
 	auto *const z = getZones() + index;
 	Vec3d xy;
@@ -273,6 +274,9 @@ void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projec
 		double alt, az;
 		Vec3d starJ2000 = s->getJ2000Pos(z,movement_factor);
 		Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
+		if (lightAberration)
+			local_pos = LightAberration::applyToDirection(
+				local_pos, LightAberration::makeLocalBeta(observerVelocity, nav));
 		int mag = s->getMag();
 		// Correct star position accounting for atmospheric refraction
 		if (atmosphere) {
@@ -349,7 +353,7 @@ template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
 }
 
 template<class Star>
-void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars,  bool atmosphere, bool isolateSelected) const
+void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars, bool atmosphere, bool lightAberration, const Vec3d& observerVelocity, bool isolateSelected) const
 {
 	SpecialZoneData<Star> *const z = getZones() + index;
 	Vec3d xy;
@@ -362,6 +366,9 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 		double alt, az;
 		Vec3d starJ2000 = s->getJ2000Pos(z,movement_factor);
 		Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
+		if (lightAberration)
+			local_pos = LightAberration::applyToDirection(
+				local_pos, LightAberration::makeLocalBeta(observerVelocity, nav));
 		int mag = s->getMag();
 		// Correct star position accounting for atmospheric refraction
 		if (atmosphere) {

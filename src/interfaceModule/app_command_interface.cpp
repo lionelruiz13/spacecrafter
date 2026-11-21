@@ -1034,6 +1034,12 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 			coreLink->atmosphericRefractionSetFlag(newval);
 			break;
+		case FLAG_NAMES::FN_LIGHT_ABERRATION :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->lightAberrationGetFlag();
+
+			coreLink->lightAberrationSetFlag(newval);
+			break;
 		case FLAG_NAMES::FN_QUATERNION_MODE:
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
 				newval = !coreLink->getQuaternionMode();
@@ -1783,6 +1789,18 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 				return executeCommandStatus();
 			}
 			stcore->setBodyZoomScale(evalDouble(setValue));
+			break;
+		case SCD_NAMES::APP_LIGHT_ABERRATION_SPEED_SCALE:
+			if (!stcore->setLightAberrationSpeedScale(evalDouble(setValue))) {
+				debug_message = "command_'set': light_aberration_speed_scale must be finite and nonnegative";
+				return executeCommandStatus();
+			}
+			break;
+		case SCD_NAMES::APP_LIGHT_ABERRATION_MAX_SPEED:
+			if (!stcore->setLightAberrationMaxSpeed(evalDouble(setValue))) {
+				debug_message = "command_'set': light_aberration_max_speed must be finite and greater than zero";
+				return executeCommandStatus();
+			}
 			break;
 		case SCD_NAMES::APP_FLAG_NONE:
 						debug_message = "command_'set': unknown argument";

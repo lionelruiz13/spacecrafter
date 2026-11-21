@@ -11,6 +11,7 @@
 
 #include "bodyModule/body_blackhole.hpp"
 #include "bodyModule/blackhole_trajectory_lut.hpp"
+#include "navModule/light_aberration.hpp"
 
 #include "bodyModule/body_color.hpp"
 #include "bodyModule/orbit_3d.hpp"
@@ -250,6 +251,7 @@ void BlackHole::drawDisk(const Projector* prj, const Mat4d& mat)
                             viewport[2], prj->getClippingFov()[2]);
     model.diskColor = Vec4f(visual.diskColor[0], visual.diskColor[1], visual.diskColor[2], visual.diskIntensity);
     model.photonColor = Vec4f(visual.photonColor[0], visual.photonColor[1], visual.photonColor[2], visual.turbulence);
+    model.aberrationBeta = Vec4f(aberrationBetaEye[0], aberrationBetaEye[1], aberrationBetaEye[2], 0.f);
     BlackHoleLensing::submitDiskModel(model, diskTex->getTexture(), camera.length() * unitRadius);
 }
 
@@ -273,8 +275,10 @@ void BlackHole::drawHorizon(VkCommandBuffer cmd, const Projector* prj, const Mat
 
 void BlackHole::submitLensing(const Projector* prj, const Mat4d& mat, double screen_sz)
 {
+    const Vec3d beta(aberrationBetaEye[0], aberrationBetaEye[1], aberrationBetaEye[2]);
+    const Mat4d eyeFrame = Mat4d::identity();
     Vec3d centerProjected;
-    prj->projectCustom(Vec3d(0.0, 0.0, 0.0), centerProjected, mat);
+    prj->projectCustom(LightAberration::applyToPosition(mat * Vec3d(0.0, 0.0, 0.0), beta), centerProjected, eyeFrame);
 
     const Vec3d samples[6] = {
         Vec3d( radius, 0.0, 0.0), Vec3d(-radius, 0.0, 0.0),
@@ -284,7 +288,7 @@ void BlackHole::submitLensing(const Projector* prj, const Mat4d& mat, double scr
     float eventRadius = 0.f;
     for (const Vec3d &sample : samples) {
         Vec3d projected;
-        prj->projectCustom(sample, projected, mat);
+        prj->projectCustom(LightAberration::applyToPosition(mat * sample, beta), projected, eyeFrame);
         const float dx = static_cast<float>(projected[0] - centerProjected[0]);
         const float dy = static_cast<float>(projected[1] - centerProjected[1]);
         eventRadius = std::max(eventRadius, std::sqrt(dx * dx + dy * dy));

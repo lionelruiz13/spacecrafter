@@ -165,7 +165,7 @@ void StellarSystemModule::update(int delta_time)
 	                                    core->navigation->geTdomeMat(),
 	                                    core->navigation->getDomeFixedMat());
 
-    asyncUpdateBegin({sunPos, moonPos, earthPos_helio, moonPos_helio});
+    asyncUpdateBegin({sunPos, moonPos, earthPos_helio, moonPos_helio, core->getLightAberrationVelocity()});
 
     // Update faders
 	core->currentSkyGridMgr->update(delta_time);
@@ -200,13 +200,15 @@ void StellarSystemModule::draw(int delta_time)
 	core->currentMilkyWay->draw(core->currentToneConverter.get(), core->projection, core->navigation, core->timeMgr->getJulian());
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
-	core->currentNebulas->draw(core->projection, core->navigation, core->currentToneConverter.get(), core->currentAtmosphere->getFlagShow() ? core->sky_brightness : 0);
+	core->currentNebulas->draw(core->projection, core->navigation, core->currentToneConverter.get(), core->currentAtmosphere->getFlagShow() ? core->sky_brightness : 0,
+	                           core->FlagLightAberration, core->getLightAberrationVelocity());
 	core->currentIlluminates->draw(core->projection, core->navigation);
 	core->currentAsterisms->draw(core->projection, core->navigation);
 	core->currentStarLines->draw(core->navigation);
 	// StarNavigator uses the same persistence framebuffer as the normal sky
 	// stars, so stars_trace works in this mode too.
-    core->currentStarNav->drawTraced(*core->currentHipStars, core->navigation, core->projection);
+    core->currentStarNav->drawTraced(*core->currentHipStars, core->navigation, core->projection,
+                                    core->FlagLightAberration, core->getLightAberrationVelocity());
 	core->currentSkyGridMgr->draw(core->projection, core->observatory.get());
 	core->currentSkyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	core->currentSkyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
@@ -266,14 +268,15 @@ void StellarSystemModule::asyncUpdateLoop()
     AsyncUpdateData data;
     threadQueue.acquire();
     while (threadQueue.pop(data)) {
-        core->currentSsystemFactory->computePreDraw(core->projection, core->navigation);
+        core->currentSsystemFactory->computePreDraw(core->projection, core->navigation,
+                                                    core->FlagLightAberration, data.observerVelocity);
         core->currentAtmosphere->computeColor(core->timeMgr->getJDay(), data.sunPos, data.moonPos,
     	                          core->currentSsystemFactory->getMoon()->get_phase(core->currentSsystemFactory->getEarth()->get_heliocentric_ecliptic_pos()),
     	                          core->currentToneConverter.get(), core->projection,
 								  data.earthPos_helio, data.moonPos_helio,
 								  observer->getLatitude(), observer->getAltitude(),
     	                          15.f, 40.f);	// Temperature = 15c, relative humidity = 40%
-        core->currentHipStars->preDraw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), core->currentAtmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
+        core->currentHipStars->preDraw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->navigation, core->timeMgr.get(), core->observatory->getAltitude(), core->currentAtmosphere->getFlagShow() && core->FlagAtmosphericRefraction, core->FlagLightAberration, data.observerVelocity);
         core->currentSsystemFactory->bodyTrace(core->navigation);
         asyncWorkState = false;
     }

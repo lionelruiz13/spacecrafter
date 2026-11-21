@@ -46,6 +46,7 @@
 #include "tools/object.hpp"
 #include "tools/s_font.hpp"
 #include "tools/s_texture.hpp"
+#include "tools/sc_const.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/translator.hpp"
 #include "tools/utility.hpp"
@@ -772,7 +773,7 @@ int MagConverter::computeRCMag(float mag, const ToneReproductor *eye, float rc_m
 }
 
 //! Draw all the stars
-double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj, Navigator* nav, TimeMgr* timeMgr, float altitude, bool atmosphere)
+double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj, Navigator* nav, TimeMgr* timeMgr, float altitude, bool atmosphere, bool lightAberration, const Vec3d& observerVelocity)
 {
 	starNameToDraw.clear();
 	double twinkle_param=1.;
@@ -788,6 +789,8 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 
 	int max_search_level = getMaxSearchLevel(eye, prj);
 	const GeodesicSearchResult* geodesic_search_result = grid->search(prj->unprojectViewport(),max_search_level);
+	const bool requiresFullSkySearch = lightAberration
+	                                   && observerVelocity.length() * AU / SPEED_OF_LIGHT > 0.01;
 
 	mag_converter->setFov(prj->getFov());
 	mag_converter->setEye(eye);
@@ -825,11 +828,20 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 		}
 		const bool onlySelected = isolateSelected && !selected_star.empty();
 		int zone=0;
-		for (GeodesicSearchInsideIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
-			it->second->draw(zone,true,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, onlySelected);
-		}
-		for (GeodesicSearchBorderIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
-			it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, onlySelected);
+		if (requiresFullSkySearch) {
+			// Aberration can move a source across a large part of the sky at
+			// relativistic navigation speeds, so un-aberrated viewport culling
+			// would incorrectly discard stars that are refracted into view.
+			for (zone = 0; zone < static_cast<int>(it->second->getNrOfZones()); ++zone) {
+				it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw, selected_star, atmosphere, true, observerVelocity, onlySelected);
+			}
+		} else {
+			for (GeodesicSearchInsideIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
+				it->second->draw(zone,true,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw, selected_star, atmosphere, lightAberration, observerVelocity, onlySelected);
+			}
+			for (GeodesicSearchBorderIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
+				it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw, selected_star, atmosphere, lightAberration, observerVelocity, onlySelected);
+			}
 		}
 
 	}

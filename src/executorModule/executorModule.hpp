@@ -35,6 +35,7 @@ struct AsyncUpdateData {
     Vec3d moonPos;
     Vec3d earthPos_helio;
     Vec3d moonPos_helio;
+    Vec3d observerVelocity;
 };
 
 class ExecutorModule {
