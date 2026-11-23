@@ -84,7 +84,7 @@ public:
 	void setLocation(float _altitude, bool deltax, float _azimuth, bool deltay, float duration);
 
 	//! displays the text on the screen
-	void draw(const Projector* prj);
+	void draw(const Projector* prj, float azimuthOffset = 0.0f);
 
 private:
 	std::string name;

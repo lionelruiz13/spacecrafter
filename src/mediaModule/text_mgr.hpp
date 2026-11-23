@@ -78,7 +78,7 @@ public:
 	void update(int delta_time);
 
 	//! orders the layout of the different texts
-	void draw(const Projector* prj);
+	void draw(const Projector* prj, double videoRotation = 0.0);
 
 	//! adds a text to the textUsr container
 	void add(const std::string& name, const TEXT_MGR_PARAM& textParam);

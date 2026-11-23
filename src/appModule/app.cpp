@@ -838,12 +838,12 @@ void App::draw(int delta_time)
 		//draw video frame to classical viewport
 		media->drawViewPort(coreLink->getHeading() - baseHeading);
 		//draw text user
-		media->textDraw();
+		media->textDraw(coreLink->getHeading() - baseHeading);
 		context.stat->capture(Capture::MEDIA_DRAW);
 		context.helper->endDraw();
 	} else {
 		//draw text user
-		media->textDraw();
+		media->textDraw(coreLink->getHeading() - baseHeading);
 		context.helper->endDraw();
 		//draw video frame to classical viewport
 		media->drawViewPort(coreLink->getHeading() - baseHeading);

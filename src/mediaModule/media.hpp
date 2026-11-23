@@ -347,8 +347,8 @@ public:
 		textMgr->setColor(v);
 	}
 
-	void textDraw() {
-		textMgr->draw(prj);
+	void textDraw(double videoRotation = 0.0) {
+		textMgr->draw(prj, videoRotation);
 	}
 
 	void setTextColor(const Vec3f &color) {

@@ -68,13 +68,13 @@ void Text::update(int delta_time)
 	}
 }
 
-void Text::draw(const Projector* prj)
+void Text::draw(const Projector* prj, float azimuthOffset)
 {
 	if (fader.isZero())
 		return;
 
 	textColor[3] = fader;
-	textFont->printHorizontal(prj, altitude, azimuth, text,textColor, textAlign, true);
+	textFont->printHorizontal(prj, altitude, azimuth + azimuthOffset, text,textColor, textAlign, true);
 }
 
 void Text::setLocation(float _altitude, bool deltax, float _azimuth, bool deltay, float duration)

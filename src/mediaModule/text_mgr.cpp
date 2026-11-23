@@ -192,12 +192,13 @@ void TextMgr::buildFont()
 		cLog::get()->write("TEXT: module disable", LOG_TYPE::L_WARNING);
 }
 
-void TextMgr::draw(const Projector* prj)
+void TextMgr::draw(const Projector* prj, double videoRotation)
 {
 	if (!isUsable)
 		return;
 	for (const auto& [key, value] : textUsr) {
-		value->draw(prj);
+		const float azimuthOffset = key.rfind("video_subtitle", 0) == 0 ? -videoRotation : 0.0f;
+		value->draw(prj, azimuthOffset);
 	}
 }
 
