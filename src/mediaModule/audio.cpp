@@ -85,8 +85,15 @@ double Audio::getAudioDurationSeconds(const std::string& filename)
     double duration = formatContext->duration > 0 ? formatContext->duration / (double)AV_TIME_BASE : 0.0;
 
     avformat_close_input(&formatContext);
-	std::cout << "Audio::getAudioDurationSeconds: " << filename << " duration: " << duration << " seconds" << std::endl;
     return duration;
+}
+
+double Audio::getMusicPositionSeconds() const
+{
+	if (!music_loaded || track == nullptr)
+		return -1.0;
+
+	return Mix_GetMusicPosition(track);
 }
 
 void Audio::musicLoad(const std::string& filename, bool _loop)

@@ -107,6 +107,8 @@ public:
 	void musicJumpRelative(float deltaSeconds);
 	//! returns the duration of the audio file in seconds.
 	double getAudioDurationSeconds(const std::string& filename);
+	//! returns the current music position in seconds, or -1 if unavailable.
+	double getMusicPositionSeconds() const;
 
 private:
 	int master_volume;				//!< sound manager output volume

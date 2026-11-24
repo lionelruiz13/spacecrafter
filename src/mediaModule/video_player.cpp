@@ -16,6 +16,7 @@
 #include <fstream>
 #include <SDL2/SDL.h>
 #include <chrono>
+#include <cmath>
 #include <sstream>
 #include <iomanip>
 
@@ -86,6 +87,7 @@ VideoPlayer::VideoPlayer(Media *media, InitParser &conf) : media(media), maxText
 	hasAlphaChannel = false;
 	targetFormat = AV_PIX_FMT_YUV420P;
 	skipFrame = conf.getBoolean(SCS_IO, SCK_VIDEO_FRAME_SKIP);
+	configuredSkipFrame = skipFrame;
 	if (conf.getBoolean(SCS_DEBUG, SCK_PRINT_VIDEO_INFO)) {
 		if (conf.getBoolean(SCS_DEBUG, SCK_PRINT_LOG)) {
 			cLog::get()->write(SCK_PRINT_VIDEO_INFO " can't be enabled while " SCK_PRINT_LOG " is active.", LOG_TYPE::L_ERROR);
@@ -162,7 +164,6 @@ void VideoPlayer::pauseCurrentVideo()
 		currentTime = std::chrono::steady_clock::now();
 		nextFrame = currentTime + deltaFrame;
 		if (audio) {
-			audio->musicJump(std::chrono::duration_cast<std::chrono::duration<double>>(currentFrame * deltaFrame).count());
 			audio->musicResume();
 		}
 		latency = -deltaFrame;
@@ -777,6 +778,15 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 			auto now = std::chrono::steady_clock::now();
 			latency += now - currentTime;
 			currentTime = now;
+		}
+		if (audioClockSync && audio && playbackSpeedFactor == decltype(playbackSpeedFactor)::one() && frameRate > 0.0) {
+			const double audioPosition = audio->getMusicPositionSeconds();
+			if (audioPosition >= 0.0 && std::isfinite(audioPosition)) {
+				currentTime = std::chrono::steady_clock::now();
+				const double nextVideoFrameTime = static_cast<double>(currentFrame + 1) / frameRate;
+				nextFrame = currentTime + std::chrono::duration_cast<std::chrono::steady_clock::duration>(
+					std::chrono::duration<double>(nextVideoFrameTime - audioPosition));
+			}
 		}
 		if (nextFrame <= currentTime) {
 			if (auto nbFrames = frameCached.load(std::memory_order_acquire) - frameUsed.load(std::memory_order_relaxed)) {

@@ -147,6 +147,11 @@ public:
 	void setAdaptiveFramerate(bool enable) {
 		adaptiveFramerate = enable;
 	}
+	void setAudioClockSync(bool enable) {
+		audioClockSync = enable;
+		adaptiveFramerate = !enable;
+		skipFrame = configuredSkipFrame || enable;
+	}
 
 	inline void setLoop(bool loopy) {
 		reloop = loopy;
@@ -274,7 +279,9 @@ private:
 	uint8_t codecDecodeThreads = 0;
 	bool firstUse = true; // Tell if this texture is new and uninitialized yet
 	bool skipFrame = false; // Tell if frame could be skipped when playing a video
+	bool configuredSkipFrame = false;
 	bool adaptiveFramerate = false;
+	bool audioClockSync = false;
 	bool debugMode = false;
 	bool waitCacheFull = false;
 	bool reloop = false;

@@ -170,7 +170,7 @@ bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const 
 		audio->musicHalt();
 	}
 
-	player->setAdaptiveFramerate(!withMusic);
+	player->setAudioClockSync(withMusic);
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+filename, LOG_TYPE::L_DEBUG);
 	if (player->playNewVideo(filename, withMusic ? audio.get() : nullptr, preload) ==false) {
 		cLog::get()->write("Media::playerPlay error playing videofilename "+filename, LOG_TYPE::L_ERROR);
