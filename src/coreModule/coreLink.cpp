@@ -479,6 +479,14 @@ bool CoreLink::lightAberrationGetFlag() const {
 	return core->FlagLightAberration;
 }
 
+void CoreLink::lightAberrationContinuousSpeedSetFlag(bool b) {
+	core->FlagLightAberrationContinuousSpeed = b;
+}
+
+bool CoreLink::lightAberrationContinuousSpeedGetFlag() const {
+	return core->FlagLightAberrationContinuousSpeed;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Time---------------------------
 ////////////////////////////////////////////////////////////////////////////////

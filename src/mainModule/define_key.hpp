@@ -278,6 +278,7 @@
 #define SCK_FLAG_SUN_SCALED                 "flag_sun_scaled"
 #define SCK_FLAG_ATMOSPHERIC_REFRACTION     "flag_atmospheric_refraction"
 #define SCK_FLAG_LIGHT_ABERRATION           "flag_light_aberration"
+#define SCK_FLAG_LIGHT_ABERRATION_CONTINUOUS_SPEED "flag_light_aberration_continuous_speed"
 #define SCK_LIGHT_ABERRATION_SPEED_SCALE    "light_aberration_speed_scale"
 #define SCK_MOON_SCALE                      "moon_scale"
 #define SCK_SUN_SCALE                       "sun_scale"

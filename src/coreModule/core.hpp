@@ -651,6 +651,8 @@ private:
 	bool FlagEnableMoveKeys;
 	bool FlagAtmosphericRefraction = false;
 	bool FlagLightAberration = false;
+	// Compatibility switch: remove with the strict-speed branch if continuous mapping becomes permanent.
+	bool FlagLightAberrationContinuousSpeed = true;
 	double lightAberrationSpeedScale = 1.0;
 	bool lightAberrationWasSuperluminal = false;
 	bool flagNav = false; 				// define the NAV version edition

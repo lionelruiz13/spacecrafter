@@ -331,6 +331,7 @@ void Core::init(const InitParser& conf)
 	setFlagAstronomical(flagAstronomical);
 	FlagAtmosphericRefraction = conf.getBoolean(SCS_VIEWING,SCK_FLAG_ATMOSPHERIC_REFRACTION);
 	FlagLightAberration = conf.getBoolean(SCS_VIEWING, SCK_FLAG_LIGHT_ABERRATION);
+	FlagLightAberrationContinuousSpeed = conf.getBoolean(SCS_VIEWING, SCK_FLAG_LIGHT_ABERRATION_CONTINUOUS_SPEED, true);
 	setLightAberrationSpeedScale(conf.getDouble(SCS_VIEWING, SCK_LIGHT_ABERRATION_SPEED_SCALE, 1.0));
 
 	initialvalue.initial_landscapeName=conf.getStr(SCS_INIT_LOCATION,SCK_LANDSCAPE_NAME);
@@ -736,19 +737,25 @@ void Core::uboCamUpdate()
 	uboCam->setClippingFov(projection->getClippingFov());
 	uboCam->setViewportCenter(projection->getViewportFloatCenter());
 	uboCam->setMVP2D(projection->getMatProjectionOrtho2D());
-	const Vec3d scaledVelocity = observatory->getHeliocentricVelocity() * lightAberrationSpeedScale;
-	const double speedInC = scaledVelocity.length() * (AU / SPEED_OF_LIGHT);
-	const bool speedAtOrAboveC = FlagLightAberration && (!std::isfinite(speedInC) || speedInC >= 1.0);
-	if (speedAtOrAboveC && !lightAberrationWasSuperluminal) {
-		std::ostringstream message;
-		message << std::setprecision(8)
-		        << "Light aberration not applied: calculated speed " << speedInC
-		        << "c >= 1c (speed_scale: " << lightAberrationSpeedScale
-		        << ", max_speed: " << 1.0 / lightAberrationSpeedScale
-		        << "c); the relativistic formula requires v < c.";
-		cLog::get()->write(message, LOG_TYPE::L_WARNING);
+	// Strict-speed comparison only: remove this block and its state if the
+	// continuous-speed flag becomes permanent.
+	if (FlagLightAberration && !FlagLightAberrationContinuousSpeed) {
+		const Vec3d scaledVelocity = observatory->getHeliocentricVelocity() * lightAberrationSpeedScale;
+		const double speedInC = scaledVelocity.length() * (AU / SPEED_OF_LIGHT);
+		const bool speedAtOrAboveC = !std::isfinite(speedInC) || speedInC >= 1.0;
+		if (speedAtOrAboveC && !lightAberrationWasSuperluminal) {
+			std::ostringstream message;
+			message << std::setprecision(8)
+			        << "Light aberration not applied: calculated speed " << speedInC
+			        << "c >= 1c (speed_scale: " << lightAberrationSpeedScale
+			        << ", max_speed: " << 1.0 / lightAberrationSpeedScale
+			        << "c); the relativistic formula requires v < c.";
+			cLog::get()->write(message, LOG_TYPE::L_WARNING);
+		}
+		lightAberrationWasSuperluminal = speedAtOrAboveC;
+	} else {
+		lightAberrationWasSuperluminal = false;
 	}
-	lightAberrationWasSuperluminal = speedAtOrAboveC;
 	const Vec3d aberrationBetaEye = FlagLightAberration
 		? LightAberration::makeEyeBeta(getLightAberrationVelocity(), navigation)
 		: Vec3d(0., 0., 0.);
@@ -776,7 +783,15 @@ Vec3d Core::getLightAberrationVelocity() const
 		return Vec3d(0., 0., 0.);
 	const Vec3d velocity = observatory->getHeliocentricVelocity() * lightAberrationSpeedScale;
 	const double beta = velocity.length() * (AU / SPEED_OF_LIGHT);
-	// The relativistic aberration formula is defined only below c.
+	if (FlagLightAberrationContinuousSpeed) {
+		if (!std::isfinite(beta) || beta == 0.0)
+			return std::isfinite(beta) ? velocity : Vec3d(0., 0., 0.);
+		// This visual mapping is not a physical velocity transformation. It keeps
+		// the scaled navigation speed below c; leave room for float shader precision.
+		const double effectiveBeta = std::min(beta / std::hypot(1.0, beta), 1.0 - 1e-6);
+		return velocity * (effectiveBeta / beta);
+	}
+	// Strict-speed comparison path: remove with the flag if continuous mapping becomes permanent.
 	return std::isfinite(beta) && beta < 1.0 ? velocity : Vec3d(0., 0., 0.);
 }
 
@@ -1693,6 +1708,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED, currentSsystemFactory->getFlagMoonScale());
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED, currentSsystemFactory->getFlagSunScale());
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_LIGHT_ABERRATION, FlagLightAberration);
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_LIGHT_ABERRATION_CONTINUOUS_SPEED, FlagLightAberrationContinuousSpeed);
 	conf.setDouble(SCS_VIEWING, SCK_LIGHT_ABERRATION_SPEED_SCALE, lightAberrationSpeedScale);
 	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_INTENSITY, currentAsterisms->getArtIntensity());
 	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_FADE_DURATION, currentAsterisms->getArtFadeDuration());

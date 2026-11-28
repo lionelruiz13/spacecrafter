@@ -1040,6 +1040,12 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 			coreLink->lightAberrationSetFlag(newval);
 			break;
+		case FLAG_NAMES::FN_LIGHT_ABERRATION_CONTINUOUS_SPEED :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->lightAberrationContinuousSpeedGetFlag();
+
+			coreLink->lightAberrationContinuousSpeedSetFlag(newval);
+			break;
 		case FLAG_NAMES::FN_QUATERNION_MODE:
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
 				newval = !coreLink->getQuaternionMode();

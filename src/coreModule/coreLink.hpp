@@ -911,6 +911,9 @@ public:
 	void lightAberrationSetFlag(bool b);
 	//! Get flag for activating velocity-dependent light aberration
 	bool lightAberrationGetFlag() const;
+	//! Toggle continuous mapping of navigation speed below c
+	void lightAberrationContinuousSpeedSetFlag(bool b);
+	bool lightAberrationContinuousSpeedGetFlag() const;
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Navigation -------------
